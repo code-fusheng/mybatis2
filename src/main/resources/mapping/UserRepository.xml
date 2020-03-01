@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.fusheng.mybatis2.repository.UserRepository">
+
+    <!-- <select>元素执行查询操作 -->
+    <select id="findUserById" resultType="xyz.fusheng.mybatis2.entity.User" parameterType="java.lang.Long">
+        select * from user where id = #{id}
+    </select>
+    <!-- <update>元素更新操作 -->
+    <update id="updateUser" parameterType="xyz.fusheng.mybatis2.entity.User" flushCache="true" statementType="PREPARED" timeout="20">
+        update user set name = #{name}, username = #{username}, password = #{password} where id = #{id}
+    </update>
+    <!-- <delete>元素删除操作 -->
+    <delete id="deleteUserById" parameterType="java.lang.Long">
+        delete from user where id = #{id}
+    </delete>
+
+    <!-- <sql>元素 -->
+    <sql id="userColumns">id,name,username,password</sql>
+    <!-- 引用sql片段来查询 -->
+    <select id="findUserColumns" parameterType="java.lang.Long" resultType="xyz.fusheng.mybatis2.entity.User">
+        select <include refid="userColumns"/>
+        from user
+        where id = #{id}
+    </select>
+
+    <!-- <resultMap>元素模板 -->
+<!--    <resultMap id="" type="">-->
+<!--        <constructor>                       &lt;!&ndash; 类在实例化时，用来注入结果到构造方法中 &ndash;&gt;-->
+<!--            <idArg/>                        &lt;!&ndash; ID参数；标记结果作为ID &ndash;&gt;-->
+<!--            <arg/>                          &lt;!&ndash; 注入到构造方法的一个普通结果 &ndash;&gt;-->
+<!--        </constructor>-->
+<!--        <id/>                               &lt;!&ndash; 用于表示那个列是主键 &ndash;&gt;-->
+<!--        <result/>                           &lt;!&ndash; 注入到字段或JavaBean属性的普通结果 &ndash;&gt;-->
+<!--        <association property=""/>          &lt;!&ndash; 用于一对一关联 &ndash;&gt;-->
+<!--        <collection property=""/>           &lt;!&ndash; 用于一对多关联 &ndash;&gt;-->
+<!--        <discriminator javaType="">         &lt;!&ndash; 使用结果集来决定使用那个结果映射 &ndash;&gt;-->
+<!--            <case value=""/>                &lt;!&ndash; 基于某些值的结果映射 &ndash;&gt;-->
+<!--        </discriminator>-->
+<!--    </resultMap>-->
+
+    <!-- <resultMap>定义结果集映射 ： 此处数据库字段于对象属性名不一致 -->
+    <resultMap id="userResultMap" type="xyz.fusheng.mybatis2.entity.User">
+        <id property="id" column="t_id"></id>
+        <result property="name" column="t_name"></result>
+        <result property="username" column="t_username"></result>
+        <result property="password" column="t_password"></result>
+    </resultMap>
+    <!-- 通过<resultMap>元素定义结果集映射查询所有user -->
+    <select id="findAllUser" resultMap="userResultMap">
+        select * from t_user
+    </select>
+
+
+
+</mapper>
